@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA version="1.4.0" xmlns="http://www.collada.org/2005/11/COLLADASchema">
+	<asset>
+		<contributor>
+			<author>Illusoft Collada 1.4.0 plugin for Blender - http://colladablender.illusoft.com</author>
+			<authoring_tool>Blender v:248 - Illusoft Collada Exporter v:0.3.160</authoring_tool>
+			<comments></comments>
+			<copyright></copyright>
+			<source_data>file://</source_data>
+		</contributor>
+		<created>2009-03-18T14:24:38.906773</created>
+		<modified>2009-03-18T14:24:38.906807</modified>
+		<unit meter="0.01" name="centimeter"/>
+		<up_axis>Z_UP</up_axis>
+	</asset>
+	<library_cameras>
+		<camera id="Camera-camera" name="Camera-camera">
+			<optics>
+				<technique_common>
+					<perspective>
+						<yfov>49.13434</yfov>
+						<znear>2.54</znear>
+						<zfar>2540.0</zfar>
+					</perspective>
+				</technique_common>
+			</optics>
+		</camera>
+	</library_cameras>
+	<library_visual_scenes>
+		<visual_scene id="SketchUpScene" name="SketchUpScene">
+			<node layer="L1" id="Camera_001" name="Camera_001">
+				<translate sid="translate">1592.31543 2240.32983 1409.50378</translate>
+				<rotate sid="rotateZ">0 0 1 157.59203</rotate>
+				<rotate sid="rotateY">0 1 0 -0.00000</rotate>
+				<rotate sid="rotateX">1 0 0 106.64590</rotate>
+				<scale sid="scale">1.00000 1.00000 1.00000</scale>
+				<instance_camera url="#Camera-camera"/>
+			</node>
+		</visual_scene>
+	</library_visual_scenes>
+	<scene>
+		<instance_visual_scene url="#SketchUpScene"/>
+	</scene>
+</COLLADA>

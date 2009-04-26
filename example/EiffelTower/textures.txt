@@ -1,0 +1,2 @@
+<../images/eiffel.png> <../images/eiffel.png>
+<../images/top.jpg> <../images/top.jpg>
