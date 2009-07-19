@@ -8,4 +8,5 @@ public {
 	import icypixels.primitives;
 	import icypixels.model;
 	import icypixels.vector;
+	import icypixels.zoomable;
 }

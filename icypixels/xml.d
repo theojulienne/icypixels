@@ -153,7 +153,7 @@ static class Xml {
 			}
 			
 			char[] popString( int popLength ) {
-				assert( popLength > 0, "Can't pop negative number of characters" );
+				assert( popLength >= 0, "Can't pop negative number of characters" );
 				char[] tmp = xml[currentPosition..currentPosition+popLength];
 				currentPosition += popLength;
 				return tmp;

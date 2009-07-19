@@ -2,7 +2,9 @@ module icypixels.vector;
 
 import derelict.opengl.gl;
 
+import std.compat;
 import std.math;
+import std.string;
 
 struct Vector( int DIMS ) {
 	//float x=0, y=0, z=0;
@@ -157,6 +159,14 @@ struct Vector( int DIMS ) {
 		return tv;
 	}
 	
+	Vector opDiv( Vector n ) {
+		Vector tv = *this;
+		for ( int i = 0; i < values.length; i++ ) {
+			tv.values[i] = values[i] / n.values[i];
+		}
+		return tv;
+	}
+	
 	int opEquals( Vector v ) {
 		for ( int i = 0; i < values.length; i++ ) {
 			if ( v.values[i] != values[i] ) {
@@ -191,6 +201,10 @@ struct Vector( int DIMS ) {
 		}
 		
 		return sqrt( sumSquares );
+	}
+	
+	string toString( ) {
+		return "<Vector>";
 	}
 }
 

@@ -125,6 +125,15 @@ enum KeyCode {
 	/* FIXME: Misc. function keys */
 }
 
+enum MouseButton {
+	Primary=1,
+	Middle=2,
+	Secondary=3,
+	
+	WheelUp=4,
+	WheelDown=5,
+}
+
 class KeyEvent : Event {
 	SDL_Event event;
 	
@@ -162,6 +171,10 @@ class MouseEvent : Event {
 	
 	float mouseY( ) {
 		return event.motion.y;
+	}
+	
+	MouseButton button( ) {
+		return cast(MouseButton)event.button.button;
 	}
 }
 
