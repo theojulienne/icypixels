@@ -14,6 +14,7 @@ import derelict.opengl.gl;
 import icypixels.vector;
 
 class Zoomable {
+	public Vector2D screenOffset;
 	Vector2D screenSize;
 	Vector2D worldSize;
 	
@@ -34,10 +35,12 @@ class Zoomable {
 		// work out the multiplier to make zoom of 1.0 fit screen exactly
 		Vector2D worldStretchV = screenSize / worldSize;
 		
+		this.screenOffset = Vector2D( 0.0f, 0.0f );
+		
 		worldStretch = minNum( worldStretchV.x, worldStretchV.y );
 	}
 	
-	private double realZoom( ) {
+	double realZoom( ) {
 		return (zoomFactor * worldStretch);
 	}
 	
@@ -82,11 +85,11 @@ class Zoomable {
 		Vector2D worldInScreen = worldToScreen( worldSize );
 		
 		if ( worldInScreen.x < screenSize.x ) {
-			worldPan.x = screenToWorld( (screenSize.x - worldInScreen.x) / 2 );
+			worldPan.x = screenToWorld( (screenSize.x - worldInScreen.x) / 2 ) + screenOffset.x;
 		}
 		
 		if ( worldInScreen.y < screenSize.y ) {
-			worldPan.y = screenToWorld( (screenSize.y - worldInScreen.y) / 2 );
+			worldPan.y = screenToWorld( (screenSize.y - worldInScreen.y) / 2 ) + screenOffset.y;
 		}
 	}
 	
@@ -94,7 +97,9 @@ class Zoomable {
 		constrain( );
 		
 		glScalef( realZoom, realZoom, 1 );
-		glTranslatef( worldPan.x, worldPan.y, 0 );
+		Vector2D translation;
+		translation = screenOffset + worldPan;
+		glTranslatef( translation.x, translation.y, 0 );
 	}
 	
 	// pans the world so worldPoint is positioned under screenPoint

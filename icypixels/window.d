@@ -334,11 +334,14 @@ class GLWindow
 	void setOrthographicProjection() {
 		// switch to projection mode
 		glMatrixMode(GL_PROJECTION);
+
 		// save previous matrix which contains the 
 		//settings for the perspective projection
 		glPushMatrix();
+
 		// reset matrix
 		glLoadIdentity();
+
 		// set a 2D orthographic projection
 		gluOrtho2D(0, screen.w, 0, screen.h);
 		// invert the y axis, down is positive

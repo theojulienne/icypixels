@@ -40,6 +40,8 @@ struct Vector( int DIMS ) {
 		}
 	}
 	
+	
+	
 	static Vector opCall( float values[] ... ) {
 		Vector v;
 		v.values[0..$] = values;
