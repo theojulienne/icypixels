@@ -6,6 +6,7 @@ import derelict.opengl.gl;
 import derelict.opengl.glu;
 import derelict.opengl.extension.arb.texture_rectangle;
 
+import std.compat;
 import std.stdio;
 import std.string;
 

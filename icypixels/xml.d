@@ -41,7 +41,7 @@ static class Xml {
 			
 			void print( int indent=0 ) {
 				for ( int i = 0; i < indent; i++ ) writef( " " );
-				writefln( this );
+				writefln( "%s", this );
 				foreach ( child; children )
 					child.print( indent + 1 );
 			}
