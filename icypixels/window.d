@@ -1,13 +1,16 @@
 module icypixels.window;
 
-import derelict.sdl.sdl;
-import derelict.sdl.image;
-import derelict.opengl.gl;
-import derelict.opengl.glu;
-import derelict.util.exception;
-import derelict.opengl.extension.arb.texture_rectangle;
-import derelict.opengl.extension.ext.framebuffer_object;
-import derelict.openal.al;
+version (darwin) {
+	import derelict.sdl.sdl;
+	import derelict.sdl.image;
+	import derelict.opengl.gl;
+	import derelict.opengl.extension.arb.texture_rectangle;
+} else {
+	import icylict.opengl;
+	import icylict.openglu;
+	import icylict.SDL.SDL;
+	import icylict.gl_arb;
+}
 
 import std.compat;
 import std.string;
@@ -16,10 +19,12 @@ import icypixels.util;
 
 static this()
 {
-	DerelictSDL.load();
-	DerelictSDLImage.load();
-	DerelictGL.load();
-	DerelictGLU.load();
+	version (darwin) {
+		DerelictSDL.load();
+		DerelictSDLImage.load();
+		DerelictGL.load();
+		DerelictGLU.load();
+	}
 }
 
 class Event {
@@ -273,17 +278,19 @@ class GLWindow
 			throw new SDLException( "Unable to set video mode" );
 		}
 		
-		try
-		{
-			DerelictGL.loadVersions(GLVersion.Version20);
+		version (darwin) {
+			try
+			{
+				DerelictGL.loadVersions(GLVersion.Version20);
+			}
+			catch(SharedLibProcLoadException slple)
+			{
+				// Here, you can check which is the highest version that actually loaded.
+				/* Do Something Here */
+			}
+		
+			DerelictGL.loadExtensions( );
 		}
-		catch(SharedLibProcLoadException slple)
-		{
-			// Here, you can check which is the highest version that actually loaded.
-			/* Do Something Here */
-		}
-
-		DerelictGL.loadExtensions( );
 		
 		setupGL( );
 	}

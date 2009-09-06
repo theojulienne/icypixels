@@ -1,9 +1,17 @@
 module icypixels.texture;
 
-import derelict.sdl.sdl;
-import derelict.sdl.image;
-import derelict.opengl.gl;
-import derelict.opengl.extension.arb.texture_rectangle;
+version (darwin) {
+	import derelict.sdl.sdl;
+	import derelict.sdl.image;
+	import derelict.opengl.gl;
+	import derelict.opengl.extension.arb.texture_rectangle;
+} else {
+	import icylict.opengl;
+	import icylict.openglu;
+	import icylict.gl_arb;
+	import icylict.SDL.SDL;
+	import icylict.SDL.SDL_Image;
+}
 
 import std.stdio;
 
@@ -162,13 +170,13 @@ class ImageTexture: Texture
 	
 	void activate( GLuint tex_id=GL_TEXTURE0, uint num=0 )
 	{
-		glActiveTexture( tex_id );
+		version (Windows) {} else glActiveTexture( tex_id );
 		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, texture[num] );
 	}
 	
 	void deactivate( GLuint tex_id=GL_TEXTURE0 )
 	{
-		glActiveTexture( tex_id );
+		version (Windows) {} else glActiveTexture( tex_id );
 		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, 0 );
 	}
 }
@@ -205,13 +213,13 @@ class YUVDataTexture: Texture
 	
 	void activate( GLuint tex_id=GL_TEXTURE0, uint num=0 )
 	{
-		glActiveTexture( tex_id );
+		version (Windows) {} else glActiveTexture( tex_id );
 		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, texture[num] );
 	}
 	
 	void deactivate( GLuint tex_id=GL_TEXTURE0 )
 	{
-		glActiveTexture( tex_id );
+		version (Windows) {} else glActiveTexture( tex_id );
 		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, 0 );
 	}
 	

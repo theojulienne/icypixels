@@ -1,10 +1,15 @@
 module icypixels.util;
 
-import derelict.sdl.sdl;
-import derelict.sdl.image;
-import derelict.opengl.gl;
-import derelict.opengl.glu;
-import derelict.opengl.extension.arb.texture_rectangle;
+version (darwin) {
+	import derelict.sdl.sdl;
+	import derelict.sdl.image;
+	import derelict.opengl.gl;
+	import derelict.opengl.extension.arb.texture_rectangle;
+} else {
+	import icylict.opengl;
+	import icylict.openglu;
+	import icylict.SDL.SDL;
+}
 
 import std.compat;
 import std.stdio;
