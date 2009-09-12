@@ -17,7 +17,7 @@ import std.string;
 
 import icypixels.util;
 
-static this()
+void loadIcyPixelsDeps()
 {
 	version (darwin) {
 		DerelictSDL.load();

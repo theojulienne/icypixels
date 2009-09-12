@@ -15,9 +15,12 @@ version (darwin) {
 
 import std.stdio;
 
-import icypixels.util;
+import tango.io.Stdout;
 
-abstract class Texture
+import icypixels.util;
+import icypixels.loadable;
+
+abstract class Texture : Loadable
 {
 	GLuint[] texture;
 	bool created[];
@@ -116,6 +119,7 @@ abstract class Texture
 	}
 }
 
+/*
 GLuint load_texture( char[] file, float *w, float *h )
 {
 	SDL_Surface* surface = IMG_Load(std.string.toStringz(file));
@@ -148,13 +152,16 @@ GLuint load_texture( char[] file, float *w, float *h )
 	
 	return texture;
 }
-
+*/
 class ImageTexture: Texture
 {
+	string filename = null;
+	
 	this( char[] file )
 	{
-		texture.length = 1;
-		texture[0] = load_texture( file, &w, &h );
+		this.filename = file;
+		w = 1;
+		h = 1;
 	}
 	
 	this( uint numChannels=1 )
@@ -163,15 +170,76 @@ class ImageTexture: Texture
 		{
 			genTextures( numChannels );
 		}
+		
+		loadState = LoadState.Loaded;
+	}
+	
+	SDL_Surface *surface = null;
+	
+	void load( ) {
+		if ( filename !is null ) {
+			surface = IMG_Load(std.string.toStringz(filename));
+			
+			if ( surface is null ) {
+				throw new Exception( "Failed to load image from file (" ~ filename ~ ")." );
+			}
+			
+			w = surface.w;
+			h = surface.h;
+			
+			pipeToGL( );
+			
+			/*texture.length = 1;
+			texture[0] = load_texture( filename, &w, &h );*/
+		}
 	}
 	
 	void activateAll( ) { activate; }
 	void deactivateAll( ) { deactivate; }
 	
+	void pipeToGL( ) {
+		GLuint tex;
+		glGenTextures( 1, &tex);
+		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, tex);
+		glPixelStorei( GL_UNPACK_ALIGNMENT, 4);
+		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP );
+		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP );
+		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); //GL_DECAL
+
+		SDL_PixelFormat *format = surface.format;
+
+		if (format.Amask)
+			glTexImage2D( GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, surface.w, surface.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.pixels );
+		else
+			glTexImage2D( GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, surface.w, surface.h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface.pixels );
+
+		checkGLErrors( "icygl.texture.load_texture" );
+		SDL_FreeSurface(surface);
+		surface = null;
+		
+		Stdout.format( "texture '{0}' has been piped to GL", filename ).newline;
+		
+		texture.length = 1;
+		texture[0] = tex;
+	}
+	
 	void activate( GLuint tex_id=GL_TEXTURE0, uint num=0 )
 	{
+		GLuint tex = 0;
+		
+		// only active texture if it has been loaded
+		if ( loadState == LoadState.Loaded ) {
+			// check if loaded but not piped to GL yet
+			if ( surface !is null )
+				pipeToGL( );
+			
+			tex = texture[num];
+		}
+		
 		version (Windows) {} else glActiveTexture( tex_id );
-		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, texture[num] );
+		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, tex );
 	}
 	
 	void deactivate( GLuint tex_id=GL_TEXTURE0 )

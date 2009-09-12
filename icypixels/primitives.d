@@ -6,7 +6,7 @@ import icypixels.texture;
 
 class Primitives {
 	static void renderSprite( float width=1.0f, float height=1.0f, Texture tex=null ) {
-		tex.activate();
+		if ( tex !is null ) tex.activate();
 		glBegin(GL_QUADS);
 			if ( tex !is null ) tex.texCoordBottomRight;
 		    glVertex2f( width, height );	// Top Right Of The Quad
@@ -17,7 +17,7 @@ class Primitives {
 			if ( tex !is null ) tex.texCoordTopRight;
 		    glVertex2f( width, 0.0f );	// Bottom Right Of The Quad
 		glEnd();
-		tex.deactivate();
+		if ( tex !is null ) tex.deactivate();
 	}
 	
 	static void renderGroundPlane( float width=1.0f, float height=1.0f, Texture tex=null ) {

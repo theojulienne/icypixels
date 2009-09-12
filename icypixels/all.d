@@ -9,4 +9,6 @@ public {
 	import icypixels.model;
 	import icypixels.vector;
 	import icypixels.zoomable;
+	import icypixels.loadable;
+	import icypixels.texturecache;
 }
