@@ -167,7 +167,7 @@ static class Xml {
 				return xml.length - currentPosition;
 			}
 			
-			int offsetToChar( char c ) {
+			int offsetTo( char c ) {
 				int a = 0;
 				
 				while ( a < charsLeft ) {
@@ -179,14 +179,33 @@ static class Xml {
 				return -1;
 			}
 			
+			int offsetTo( char[] y ) {
+				int a = 0;
+				
+				while ( a < charsLeft ) {
+					bool found = true;
+					foreach ( i, c; y ) { // couldn't resist
+						if ( peek( i ) != c ) {
+							found = false;
+							break;
+						}
+					}
+					if ( found )
+						return a;
+					a++;
+				}
+				
+				return -1;
+			}
+			
 			void parseTagContent( Element target ) {
-				int sepPos = offsetToChar( ' ' );
+				int sepPos = offsetTo( ' ' );
 				
 				if ( sepPos == -1 )
-					sepPos = offsetToChar( '/' );
+					sepPos = offsetTo( '/' );
 				
 				if ( sepPos == -1 )
-					sepPos = offsetToChar( '>' );
+					sepPos = offsetTo( '>' );
 				
 				if ( sepPos == -1 )
 					sepPos = charsLeft;
@@ -202,8 +221,8 @@ static class Xml {
 						break;
 
 					int tmpPos;
-					sepPos = offsetToChar( '=' );
-					tmpPos = offsetToChar( ' ' );
+					sepPos = offsetTo( '=' );
+					tmpPos = offsetTo( ' ' );
 					
 					if ( sepPos == -1 || (tmpPos != -1 && tmpPos < sepPos) )
 						sepPos = tmpPos;
@@ -216,7 +235,7 @@ static class Xml {
 					assert( peek(0) == '"', "Attributes without quotes not supported" );
 					pop( );
 					
-					string attrValue = popString( offsetToChar( '"' ) );
+					string attrValue = popString( offsetTo( '"' ) );
 					pop( ); // trailing quote
 					
 					target.setAttribute( attrName, attrValue );
@@ -230,8 +249,19 @@ static class Xml {
 					Node newNode;
 					
 					if ( first == '<' ) {
+						// comment?
+						if ( peek( 1 ) == '!' && peek( 2 ) == '-' && peek( 3 ) == '-' ) {
+							// find end of comment
+							int tagLength = offsetTo( "-->" ) + 3; // include the end
+							assert( tagLength != -1 );
+							
+							string tag = popString( tagLength );
+							
+							continue;
+						}
+						
 						// tag
-						int tagLength = offsetToChar( '>' ) + 1; // include this character
+						int tagLength = offsetTo( '>' ) + 1; // include this character
 						
 						string tag = popString( tagLength );
 						
@@ -248,7 +278,7 @@ static class Xml {
 						}
 					} else {
 						// cdata
-						int dataLength = offsetToChar( '<' ); // not including this character
+						int dataLength = offsetTo( '<' ); // not including this character
 						
 						if ( dataLength < 0 ) dataLength = charsLeft;
 						
