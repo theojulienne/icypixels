@@ -1,6 +1,0 @@
-[icypixels]
-target=icypixels
-
-version (Windows) {
-	buildflags=-llopengl32 -llSDL
-}
