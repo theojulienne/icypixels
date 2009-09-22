@@ -260,7 +260,7 @@ class GLWindow
 	SDL_Surface* screen;
 	int width, height;
 	
-	this( int width, int height )
+	this( int width, int height, bool fullscreen=false )
 	{
 		this.width = width;
 		this.height = height;
@@ -274,7 +274,10 @@ class GLWindow
 		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
 		// Create the screen surface (window)
-		screen = SDL_SetVideoMode( this.width, this.height, 32, SDL_HWSURFACE | SDL_OPENGL );
+		int flags = SDL_HWSURFACE | SDL_OPENGL;
+		if ( fullscreen )
+			flags |= SDL_FULLSCREEN;
+		screen = SDL_SetVideoMode( this.width, this.height, 32, flags );
 		if(screen is null)
 		{
 			throw new SDLException( "Unable to set video mode" );
