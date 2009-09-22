@@ -20,8 +20,17 @@ import tango.io.Stdout;
 import icypixels.util;
 import icypixels.loadable;
 
+
+
+
+
 abstract class Texture : Loadable
 {
+	static const TextureTarget = GL_TEXTURE_RECTANGLE_ARB;
+	
+	
+	
+	
 	GLuint[] texture;
 	bool created[];
 	
@@ -62,13 +71,13 @@ abstract class Texture : Loadable
 		
 		this.activate( tex_id, channel );
 		
-		/*glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		/*glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );*/
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP );
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP );
 		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		
 		//writefln( "updateData %s (%s,%s,%s) (%s,%s), %s", channel, internalformat, format, type, width, height, stride );
@@ -77,13 +86,13 @@ abstract class Texture : Loadable
 
 		if ( !created[channel] )
 		{
-			glTexImage2D( GL_TEXTURE_RECTANGLE_ARB, 0, internalformat, width, height, 0, format, type, data );
+			glTexImage2D( Texture.TextureTarget, 0, internalformat, width, height, 0, format, type, data );
 			w = width;
 			h = height;
 			created[channel] = true;
 		}
 		else
-			glTexSubImage2D( GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, width, height, format, type, data );
+			glTexSubImage2D( Texture.TextureTarget, 0, 0, 0, width, height, format, type, data );
 		
 		this.deactivate( tex_id );
 		
@@ -129,12 +138,12 @@ GLuint load_texture( char[] file, float *w, float *h )
 
 	GLuint texture;
 	glGenTextures( 1, &texture);
-	glBindTexture( GL_TEXTURE_RECTANGLE_ARB, texture);
+	glBindTexture( Texture.TextureTarget, texture);
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 4);
-	glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP );
-	glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP );
+	glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameteri( Texture.TextureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP );
+	glTexParameteri( Texture.TextureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP );
 	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); //GL_DECAL
 	
 	SDL_PixelFormat *format = surface.format;
@@ -143,9 +152,9 @@ GLuint load_texture( char[] file, float *w, float *h )
 	*h = surface.h;
 	
 	if (format.Amask)
-		glTexImage2D( GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, surface.w, surface.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.pixels );
+		glTexImage2D( Texture.TextureTarget, 0, GL_RGBA, surface.w, surface.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.pixels );
 	else
-		glTexImage2D( GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, surface.w, surface.h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface.pixels );
+		glTexImage2D( Texture.TextureTarget, 0, GL_RGB, surface.w, surface.h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface.pixels );
 	
 	checkGLErrors( "icygl.texture.load_texture" );
 	SDL_FreeSurface(surface);
@@ -200,20 +209,20 @@ class ImageTexture: Texture
 	void pipeToGL( ) {
 		GLuint tex;
 		glGenTextures( 1, &tex);
-		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, tex);
+		glBindTexture( Texture.TextureTarget, tex);
 		glPixelStorei( GL_UNPACK_ALIGNMENT, 4);
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP );
-		glTexParameteri( GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP );
+		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP );
 		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); //GL_DECAL
 
 		SDL_PixelFormat *format = surface.format;
 
 		if (format.Amask)
-			glTexImage2D( GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, surface.w, surface.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.pixels );
+			glTexImage2D( Texture.TextureTarget, 0, GL_RGBA, surface.w, surface.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.pixels );
 		else
-			glTexImage2D( GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB, surface.w, surface.h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface.pixels );
+			glTexImage2D( Texture.TextureTarget, 0, GL_RGB, surface.w, surface.h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface.pixels );
 
 		checkGLErrors( "icygl.texture.load_texture" );
 		SDL_FreeSurface(surface);
@@ -239,13 +248,13 @@ class ImageTexture: Texture
 		}
 		
 		version (Windows) {} else glActiveTexture( tex_id );
-		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, tex );
+		glBindTexture( Texture.TextureTarget, tex );
 	}
 	
 	void deactivate( GLuint tex_id=GL_TEXTURE0 )
 	{
 		version (Windows) {} else glActiveTexture( tex_id );
-		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, 0 );
+		glBindTexture( Texture.TextureTarget, 0 );
 	}
 }
 
@@ -282,13 +291,13 @@ class YUVDataTexture: Texture
 	void activate( GLuint tex_id=GL_TEXTURE0, uint num=0 )
 	{
 		version (Windows) {} else glActiveTexture( tex_id );
-		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, texture[num] );
+		glBindTexture( Texture.TextureTarget, texture[num] );
 	}
 	
 	void deactivate( GLuint tex_id=GL_TEXTURE0 )
 	{
 		version (Windows) {} else glActiveTexture( tex_id );
-		glBindTexture( GL_TEXTURE_RECTANGLE_ARB, 0 );
+		glBindTexture( Texture.TextureTarget, 0 );
 	}
 	
 	void updateYUV420PData( int width, int height, ubyte** data, int[] stride )
