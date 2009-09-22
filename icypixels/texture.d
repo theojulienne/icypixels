@@ -208,14 +208,22 @@ class ImageTexture: Texture
 	
 	void pipeToGL( ) {
 		GLuint tex;
+		
+		checkGLErrors( "icypixels.texture.ImageTexture.pipeToGL @ preGen" );
+		
 		glGenTextures( 1, &tex);
+		checkGLErrors( "icypixels.texture.ImageTexture.pipeToGL @ gen" );
 		glBindTexture( Texture.TextureTarget, tex);
+		checkGLErrors( "icypixels.texture.ImageTexture.pipeToGL @ bind" );
 		glPixelStorei( GL_UNPACK_ALIGNMENT, 4);
+		checkGLErrors( "icypixels.texture.ImageTexture.pipeToGL @ align" );
 		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP );
 		glTexParameteri( Texture.TextureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP );
+		checkGLErrors( "icypixels.texture.ImageTexture.pipeToGL @ filter/wrap" );
 		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); //GL_DECAL
+		checkGLErrors( "icypixels.texture.ImageTexture.pipeToGL @ env" );
 
 		SDL_PixelFormat *format = surface.format;
 
@@ -223,8 +231,9 @@ class ImageTexture: Texture
 			glTexImage2D( Texture.TextureTarget, 0, GL_RGBA, surface.w, surface.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface.pixels );
 		else
 			glTexImage2D( Texture.TextureTarget, 0, GL_RGB, surface.w, surface.h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface.pixels );
-
-		checkGLErrors( "icygl.texture.load_texture" );
+		
+		checkGLErrors( "icypixels.texture.ImageTexture.pipeToGL @ glTexImage2D" );
+		
 		SDL_FreeSurface(surface);
 		surface = null;
 		

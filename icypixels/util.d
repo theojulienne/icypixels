@@ -16,9 +16,11 @@ import std.compat;
 import std.stdio;
 import std.string;
 
+import tango.stdc.stringz;
+
 class GLException : Exception {
 	this( GLenum errno, string where ) {
-		string err = std.string.toString( cast(char *)gluErrorString(errno) );
+		string err = fromStringz( cast(char *)gluErrorString(errno) );
 		string trail = "";
 		if ( where != "" ) {
 			trail = format( " [%s]", where );
