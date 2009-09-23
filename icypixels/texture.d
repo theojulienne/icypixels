@@ -26,7 +26,26 @@ import icypixels.loadable;
 
 abstract class Texture : Loadable
 {
-	static const TextureTarget = GL_TEXTURE_RECTANGLE_ARB;
+	static int _TextureTarget = -1;
+	static bool useNormalisedCoordinates = false;
+	
+	static int TextureTarget( ) {
+		if ( _TextureTarget == -1 ) {
+			if ( glHaveExtension( "GL_ARB_texture_non_power_of_two" ) ) {
+				_TextureTarget = GL_TEXTURE_2D;
+				useNormalisedCoordinates = true;
+				Stdout( "Detected support for NPOT textures via GL_TEXTURE_2D target" ).newline;
+			} else if ( glHaveExtension( "GL_ARB_texture_rectangle" ) ) {
+				_TextureTarget = GL_TEXTURE_RECTANGLE_ARB;
+				useNormalisedCoordinates = false;
+				Stdout( "Detected support for NPOT textures via GL_TEXTURE_RECTANGLE_ARB target" ).newline;
+			} else {
+				assert( false, "Unfortunately your graphics card doesn't seem to support non-power-of-two textures in any way. Bailing out." );
+			}
+		}
+		
+		return _TextureTarget;
+	}
 	
 	
 	
@@ -114,17 +133,29 @@ abstract class Texture : Loadable
 	
 	void texCoordTopRight( )
 	{
-		glTexCoord2f( this.width, 0 );
+		if ( useNormalisedCoordinates ) {
+			glTexCoord2f( 1, 0 );
+		} else {
+			glTexCoord2f( this.width, 0 );
+		}
 	}
 	
 	void texCoordBottomLeft( )
 	{
-		glTexCoord2f( 0, this.height );
+		if ( useNormalisedCoordinates ) {
+			glTexCoord2f( 0, 1 );
+		} else {
+			glTexCoord2f( 0, this.height );
+		}
 	}
 	
 	void texCoordBottomRight( )
 	{
-		glTexCoord2f( this.width, this.height );
+		if ( useNormalisedCoordinates ) {
+			glTexCoord2f( 1, 1 );
+		} else {
+			glTexCoord2f( this.width, this.height );
+		}
 	}
 }
 
@@ -238,6 +269,7 @@ class ImageTexture: Texture
 		surface = null;
 		
 		Stdout.format( "texture '{0}' has been piped to GL", filename ).newline;
+		glHaveExtension( "ohhai" );
 		
 		texture.length = 1;
 		texture[0] = tex;

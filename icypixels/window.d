@@ -18,6 +18,7 @@ import std.compat;
 import std.string;
 
 import icypixels.util;
+import icypixels.texture;
 
 void loadIcyPixelsDeps()
 {
@@ -443,7 +444,8 @@ class GLWindow
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 			
 			glDisable( GL_TEXTURE_2D );
-			glEnable( GL_TEXTURE_RECTANGLE_ARB );
+			glEnable( Texture.TextureTarget );
+			assert( GL_TEXTURE_2D == Texture.TextureTarget );
 			checkGLErrors( "ready" );
 			
 			onRedraw( this, null );
