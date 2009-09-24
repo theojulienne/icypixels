@@ -60,7 +60,7 @@ import tango.text.Util;
 bool glHaveExtension( string extension ) {
 	string extensions = null;
 	
-	extensions = fromStringz( const(char*)glGetString( GL_EXTENSIONS ) );
+	extensions = fromStringz( cast(char*)glGetString( GL_EXTENSIONS ) );
 	
 	string[] extList = extensions.split( " " );
 	
