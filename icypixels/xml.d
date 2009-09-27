@@ -3,7 +3,7 @@ module icypixels.xml;
 // i can't believe i had to write this because the others were so overcomplicated and broken.
 // or maybe i can believe it.
 
-import std.compat;
+version (Tango) import std.compat;
 import std.file;
 import std.stdio;
 import std.string;

@@ -4,7 +4,7 @@ import icypixels.vector;
 import icypixels.texture;
 import icypixels.xml;
 
-import std.compat;
+version (Tango) import std.compat;
 import std.stdio;
 import std.string;
 import std.path;

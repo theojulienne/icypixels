@@ -1,6 +1,6 @@
 module icypixels.texturecache;
 
-import std.compat;
+version (Tango) import std.compat;
 import icypixels.all;
 
 class TextureCache {

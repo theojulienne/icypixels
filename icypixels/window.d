@@ -14,7 +14,7 @@ version (darwin) {
 	import icylict.gl_arb;
 }
 
-import std.compat;
+version (Tango) import std.compat;
 import std.string;
 
 import icypixels.util;

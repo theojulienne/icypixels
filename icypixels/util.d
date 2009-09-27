@@ -12,7 +12,7 @@ version (darwin) {
 	import icylict.SDL.SDL;
 }
 
-import std.compat;
+version (Tango) import std.compat;
 import std.stdio;
 import std.string;
 
@@ -55,7 +55,7 @@ class SDLException : Exception {
 
 import tango.io.Stdout;
 import tango.stdc.stringz;
-import tango.text.Util;
+version (Tango) import tango.text.Util;
 
 bool glHaveExtension( string extension ) {
 	string extensions = null;

@@ -2,7 +2,7 @@ module icypixels.vector;
 
 import derelict.opengl.gl;
 
-import std.compat;
+version (Tango) import std.compat;
 import std.math;
 import std.string;
 
