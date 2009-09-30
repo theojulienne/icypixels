@@ -16,7 +16,13 @@ version (Tango) import std.compat;
 import std.stdio;
 import std.string;
 
-import tango.stdc.stringz;
+version (Tango) {
+    import tango.io.Stdout;
+    import tango.text.Util;
+    import tango.stdc.stringz;
+} else {
+    alias toString fromStringz;
+}
 
 class GLException : Exception {
 	this( GLenum errno, string where ) {
@@ -52,10 +58,6 @@ class SDLException : Exception {
 		super( humanReadable ~ ": " ~ err );
 	}
 }
-
-import tango.io.Stdout;
-import tango.stdc.stringz;
-version (Tango) import tango.text.Util;
 
 bool glHaveExtension( string extension ) {
 	string extensions = null;

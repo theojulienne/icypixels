@@ -1,8 +1,11 @@
 module icypixels.loadable;
 
-import tango.util.container.LinkedList;
-import tango.core.ThreadPool;
-import tango.time.StopWatch;
+version (Tango) {
+    import tango.util.container.LinkedList;
+    import tango.time.StopWatch;
+} else {
+    import std.date;
+}
 
 enum LoadState {
 	Unloaded = 0,
@@ -29,7 +32,48 @@ class Loadable {
 	}
 }
 
-alias LinkedList!(Loadable) LoadableList;
+version (Tango) {
+    alias LinkedList!(Loadable) LoadableList;
+} else {
+    
+    class LoadableList {
+        Loadable[] loadables;
+        
+        this( ) {
+            
+        }
+        
+        void add( Loadable l ) {
+            loadables ~= l;
+        }
+        
+        Loadable removeHead( ) {
+            Loadable l = loadables[0];
+            
+            loadables = loadables[1..$].dup;
+            
+            return l;
+        }
+        
+        int size( ) {
+            return loadables.length;
+        }
+    }
+    
+    struct StopWatch {
+        d_time start_time;
+        
+        void start( ) {
+            start_time = getUTCtime( );
+        }
+        
+        ulong microsec( ) {
+            d_time curr_time = getUTCtime( );
+            return (curr_time - start_time) * 1000000 / TicksPerSecond;
+        }
+    }
+    
+}
 
 class ThreadedLoader {
 	// because all our libraries, like SDL, completely

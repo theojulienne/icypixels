@@ -15,13 +15,19 @@ version (darwin) {
 
 import std.stdio;
 
-import tango.io.Stdout;
+version (Tango) import tango.io.Stdout;
 
 import icypixels.util;
 import icypixels.loadable;
 
 
-
+void debugPrint( string msg ) {
+    version (Tango) {
+        Stdout( msg ).newline;
+    } else {
+        writefln( "%s", msg );
+    }
+}
 
 
 abstract class Texture : Loadable
@@ -34,11 +40,11 @@ abstract class Texture : Loadable
 			if ( glHaveExtension( "GL_ARB_texture_non_power_of_two" ) ) {
 				_TextureTarget = GL_TEXTURE_2D;
 				useNormalisedCoordinates = true;
-				Stdout( "Detected support for NPOT textures via GL_TEXTURE_2D target" ).newline;
+				debugPrint( "Detected support for NPOT textures via GL_TEXTURE_2D target" );
 			} else if ( glHaveExtension( "GL_ARB_texture_rectangle" ) ) {
 				_TextureTarget = GL_TEXTURE_RECTANGLE_ARB;
 				useNormalisedCoordinates = false;
-				Stdout( "Detected support for NPOT textures via GL_TEXTURE_RECTANGLE_ARB target" ).newline;
+				debugPrint( "Detected support for NPOT textures via GL_TEXTURE_RECTANGLE_ARB target" );
 			} else {
 				assert( false, "Unfortunately your graphics card doesn't seem to support non-power-of-two textures in any way. Bailing out." );
 			}
@@ -268,7 +274,7 @@ class ImageTexture: Texture
 		SDL_FreeSurface(surface);
 		surface = null;
 		
-		Stdout.format( "texture '{0}' has been piped to GL", filename ).newline;
+		//Stdout.format( "texture '{0}' has been piped to GL", filename ).newline;
 		glHaveExtension( "ohhai" );
 		
 		texture.length = 1;

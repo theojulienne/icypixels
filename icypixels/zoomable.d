@@ -5,7 +5,54 @@ import std.stdio;
 import std.math;
 
 // tango
-import tango.math.Math;
+version (Tango) {
+    import tango.math.Math;
+} else {
+    int isNaN(real x)
+    {
+      alias floatTraits!(real) F;
+      static if (real.mant_dig==53) { // double
+            ulong*  p = cast(ulong *)&x;
+            return (*p & 0x7FF0_0000_0000_0000 == 0x7FF0_0000_0000_0000) && *p & 0x000F_FFFF_FFFF_FFFF;
+      } else static if (real.mant_dig==64) {     // real80
+            ushort e = F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT];
+            ulong*  ps = cast(ulong *)&x;
+            return e == F.EXPMASK &&
+                *ps & 0x7FFF_FFFF_FFFF_FFFF; // not infinity
+      } else static if (real.mant_dig==113) {  // quadruple
+            ushort e = F.EXPMASK & (cast(ushort *)&x)[F.EXPPOS_SHORT];
+            ulong*  ps = cast(ulong *)&x;
+            return e == F.EXPMASK &&
+               (ps[MANTISSA_LSB] | (ps[MANTISSA_MSB]& 0x0000_FFFF_FFFF_FFFF))!=0;
+      } else {
+          return x!=x;
+      }
+    }
+    
+    /** Returns the minimum number of x and y, favouring numbers over NaNs.
+     *
+     * If both x and y are numbers, the minimum is returned.
+     * If both parameters are NaN, either will be returned.
+     * If one parameter is a NaN and the other is a number, the number is
+     * returned (this behaviour is mandated by IEEE 754R, and is useful
+     * for determining the range of a function).
+     */
+    real minNum(real x, real y) {
+        if (x<=y || isNaN(y)) return x; else return y;
+    }
+
+    /** Returns the maximum number of x and y, favouring numbers over NaNs.
+     *
+     * If both x and y are numbers, the maximum is returned.
+     * If both parameters are NaN, either will be returned.
+     * If one parameter is a NaN and the other is a number, the number is
+     * returned (this behaviour is mandated by IEEE 754-2008, and is useful
+     * for determining the range of a function).
+     */
+    real maxNum(real x, real y) {
+        if (x>=y || isNaN(y)) return x; else return y;
+    }
+}
 
 // external modules
 import derelict.opengl.gl;
